@@ -362,7 +362,9 @@ fi
 # ------------------------------------------------------------------------------
 
 CURRENT_BG='NONE'
-SEGMENT_SEPARATOR=''
+if [ ! -n "${SEGMENT_SEPARATOR+1}" ]; then
+   SEGMENT_SEPARATOR=''
+fi
 
 # Begin a segment
 # Takes three arguments, background, foreground and text. All of them can be omitted,
