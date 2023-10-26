@@ -14,6 +14,31 @@
 # ------------------------------------------------------------------------------
 
 VIRTUAL_ENV_DISABLE_PROMPT=true
+SEGMENT_SEPARATOR=""
+#BULLETTRAIN_PROMPT_ROOT=false
+BULLETTRAIN_CUSTOM_MSG="%{%F{blue}%}╭"
+BULLETTRAIN_PROMPT_CHAR="%{%K{black}%}%{%F{blue}%} ╰ %{%F{white}%}%b%T %{%f%b%k%}%{%F{black}%}%{%f%b%k%}"
+BULLETTRAIN_GIT_COLORIZE_DIRTY=true
+BULLETTRAIN_DIR_EXTENDED=2
+BULLETTRAIN_PROMPT_ORDER=(
+  #time
+  custom
+  status
+  context
+  dir
+  virtualenv
+  #screen
+  #perl
+  #ruby
+  #nvm
+  #aws
+  #go
+  #rust
+  #elixir
+  git
+  #hg
+  cmd_exec_time
+)
 
 # Define order and content of prompt
 if [ ! -n "${BULLETTRAIN_PROMPT_ORDER+1}" ]; then
