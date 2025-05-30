@@ -28,7 +28,6 @@ BULLETTRAIN_PROMPT_ORDER=(
   status
   context
   dir
-  virtualenv
   #screen
   #perl
   #ruby
@@ -37,8 +36,9 @@ BULLETTRAIN_PROMPT_ORDER=(
   #go
   #rust
   #elixir
-  git
   #hg
+  git
+  virtualenv
   cmd_exec_time
 )
 
