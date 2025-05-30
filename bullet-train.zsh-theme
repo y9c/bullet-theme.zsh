@@ -12,6 +12,8 @@
 # CONFIGURATION
 # The default configuration, that can be overwrite in your .zshrc file
 # ------------------------------------------------------------------------------
+# Supported Colors:
+# red, blue, green, cyan, yellow, magenta, black, & white
 
 VIRTUAL_ENV_DISABLE_PROMPT=true
 SEGMENT_SEPARATOR=""
@@ -112,7 +114,7 @@ fi
 
 # VIRTUALENV
 if [ ! -n "${BULLETTRAIN_VIRTUALENV_BG+1}" ]; then
-  BULLETTRAIN_VIRTUALENV_BG=yellow
+  BULLETTRAIN_VIRTUALENV_BG=black
 fi
 if [ ! -n "${BULLETTRAIN_VIRTUALENV_FG+1}" ]; then
   BULLETTRAIN_VIRTUALENV_FG=white
@@ -604,10 +606,19 @@ prompt_virtualenv() {
   local virtualenv_path="$VIRTUAL_ENV"
   if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
     prompt_segment $BULLETTRAIN_VIRTUALENV_BG $BULLETTRAIN_VIRTUALENV_FG $BULLETTRAIN_VIRTUALENV_PREFIX" $(basename $virtualenv_path)"
-  elif which pyenv &> /dev/null; then
-    if [[ "$(pyenv version | sed -e 's/ (set.*$//' | tr '\n' ' ' | sed 's/.$//')" != "system" ]]; then
-      prompt_segment $BULLETTRAIN_VIRTUALENV_BG $BULLETTRAIN_VIRTUALENV_FG $BULLETTRAIN_VIRTUALENV_PREFIX" $(pyenv version | sed -e 's/ (set.*$//' | tr '\n' ' ' | sed 's/.$//')"
+  elif [[ -n "$PIXI_PROJECT_NAME" ]]; then
+    prompt_segment "$BULLETTRAIN_VIRTUALENV_BG" "$BULLETTRAIN_VIRTUALENV_FG" "$BULLETTRAIN_VIRTUALENV_PREFIX $PIXI_PROJECT_NAME"
+  elif command -v pixi &> /dev/null; then
+    local pixi_workspace_name=$(pixi workspace name get 2>/dev/null)
+    local exit_code=$?
+    if [[ $exit_code -eq 0 && -n "$pixi_workspace_name" && "$pixi_workspace_name" != "false" ]]; then
+      BULLETTRAIN_VIRTUALENV_PREFIX="🥀"
+      prompt_segment "$BULLETTRAIN_VIRTUALENV_BG" "$BULLETTRAIN_VIRTUALENV_FG" "$BULLETTRAIN_VIRTUALENV_PREFIX $pixi_workspace_name"
     fi
+  # elif which pyenv &> /dev/null; then
+  #   if [[ "$(pyenv version | sed -e 's/ (set.*$//' | tr '\n' ' ' | sed 's/.$//')" != "system" ]]; then
+  #     prompt_segment $BULLETTRAIN_VIRTUALENV_BG $BULLETTRAIN_VIRTUALENV_FG $BULLETTRAIN_VIRTUALENV_PREFIX" $(pyenv version | sed -e 's/ (set.*$//' | tr '\n' ' ' | sed 's/.$//')"
+  #   fi
   fi
 }
 
