@@ -39,6 +39,7 @@ BULLETTRAIN_PROMPT_ORDER=(
   #hg
   git
   virtualenv
+  proxy
   cmd_exec_time
 )
 
@@ -61,6 +62,7 @@ if [ ! -n "${BULLETTRAIN_PROMPT_ORDER+1}" ]; then
     elixir
     git
     hg
+    proxy
     cmd_exec_time
   )
 fi
@@ -450,6 +452,38 @@ prompt_custom() {
   local custom_msg
   eval custom_msg=$BULLETTRAIN_CUSTOM_MSG
   [[ -n "${custom_msg}" ]] && prompt_segment $BULLETTRAIN_CUSTOM_BG $BULLETTRAIN_CUSTOM_FG "${custom_msg}"
+}
+
+# Function to display HTTP/HTTPS proxy status
+function prompt_proxy() {
+  local proxy_indicator=""
+  local proxy_port=""
+
+  # Check for http_proxy
+  if [[ -n "$http_proxy" ]]; then
+    # Extract port number (assuming format like http://host:port or http://user:pass@host:port)
+    proxy_port=$(echo "$http_proxy" | grep -oP ':\K[0-9]+' | head -1)
+    if [[ -n "$proxy_port" ]]; then
+      proxy_indicator="%F{yellow}HTTP:%f%F{green}${proxy_port}%f"
+    else
+      proxy_indicator="%F{yellow}HTTP%f" # No port found, just show HTTP indicator
+    fi
+  fi
+
+  # Check for https_proxy if http_proxy is not set or to show both if desired
+  # This example prioritizes http_proxy for brevity, or you can extend it.
+  if [[ -n "$https_proxy" && -z "$proxy_indicator" ]]; then # Only check https_proxy if http_proxy wasn't found
+    proxy_port=$(echo "$https_proxy" | grep -oP ':\K[0-9]+' | head -1)
+    if [[ -n "$proxy_port" ]]; then
+      proxy_indicator="%F{blue}HTTPS:%f%F{green}${proxy_port}%f"
+    else
+      proxy_indicator="%F{blue}HTTPS%f" # No port found, just show HTTPS indicator
+    fi
+  fi
+
+  if [[ -n "$proxy_indicator" ]]; then
+    echo "%{%F{red} %}%}$proxy_indicator" # Using a Font Awesome icon for proxy ( is fa-globe)
+  fi
 }
 
 # Git
