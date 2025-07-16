@@ -456,37 +456,31 @@ prompt_custom() {
 
 # Function to display HTTP/HTTPS proxy status
 function prompt_proxy() {
-  local proxy_indicator=""
+  local proxy_text_content=""
   local proxy_port=""
-  local icon="\uF0C2"
-  local fg_color="green"
-  local bg_color="yellow"
+  local icon=$'\uF002' # Cloud icon (Font Awesome fa-cloud)
 
-  # Check for http_proxy
+  # Determine the content of the proxy indicator
   if [[ -n "$http_proxy" ]]; then
-    # Extract port number (assuming format like http://host:port or http://user:pass@host:port)
     proxy_port=$(echo "$http_proxy" | grep -oP ':\K[0-9]+' | head -1)
     if [[ -n "$proxy_port" ]]; then
-      proxy_indicator="${icon}:${proxy_port}"
+      proxy_text_content="${icon}:${proxy_port}"
     else
-      proxy_indicator="${icon}"
+      proxy_text_content="${icon}"
     fi
-  fi
-
-  # Check for https_proxy if http_proxy is not set
-  # This example prioritizes http_proxy for brevity, or you can extend it.
-  if [[ -n "$https_proxy" && -z "$proxy_indicator" ]]; then
+  elif [[ -n "$https_proxy" ]]; then
     proxy_port=$(echo "$https_proxy" | grep -oP ':\K[0-9]+' | head -1)
     if [[ -n "$proxy_port" ]]; then
-      proxy_indicator="${icon}:${proxy_port}"
+      proxy_text_content="${icon}:${proxy_port}"
     else
-      proxy_indicator="${icon}"
+      proxy_text_content="${icon}"
     fi
   fi
 
-  # Apply the yellow background and green foreground to the entire indicator
-  if [[ -n "$proxy_indicator" ]]; then
-    echo "%{%K{${bg_color}}%F{${fg_color}}${proxy_indicator}%k%f%}"
+  # If there's content to display, call prompt_segment directly
+  if [[ -n "$proxy_text_content" ]]; then
+    # prompt_segment <BACKGROUND_COLOR> <FOREGROUND_COLOR> <PREFIX_STRING> <CONTENT_STRING>
+    prompt_segment yellow green "" "${proxy_text_content}"
   fi
 }
 
