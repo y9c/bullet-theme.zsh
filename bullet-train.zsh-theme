@@ -458,31 +458,35 @@ prompt_custom() {
 function prompt_proxy() {
   local proxy_indicator=""
   local proxy_port=""
+  local icon="\uF0C2"
+  local fg_color="green"
+  local bg_color="yellow"
 
   # Check for http_proxy
   if [[ -n "$http_proxy" ]]; then
     # Extract port number (assuming format like http://host:port or http://user:pass@host:port)
     proxy_port=$(echo "$http_proxy" | grep -oP ':\K[0-9]+' | head -1)
     if [[ -n "$proxy_port" ]]; then
-      proxy_indicator="%F{yellow}HTTP:%f%F{green}${proxy_port}%f"
+      proxy_indicator="${icon}:${proxy_port}"
     else
-      proxy_indicator="%F{yellow}HTTP%f" # No port found, just show HTTP indicator
+      proxy_indicator="${icon}"
     fi
   fi
 
-  # Check for https_proxy if http_proxy is not set or to show both if desired
+  # Check for https_proxy if http_proxy is not set
   # This example prioritizes http_proxy for brevity, or you can extend it.
-  if [[ -n "$https_proxy" && -z "$proxy_indicator" ]]; then # Only check https_proxy if http_proxy wasn't found
+  if [[ -n "$https_proxy" && -z "$proxy_indicator" ]]; then
     proxy_port=$(echo "$https_proxy" | grep -oP ':\K[0-9]+' | head -1)
     if [[ -n "$proxy_port" ]]; then
-      proxy_indicator="%F{blue}HTTPS:%f%F{green}${proxy_port}%f"
+      proxy_indicator="${icon}:${proxy_port}"
     else
-      proxy_indicator="%F{blue}HTTPS%f" # No port found, just show HTTPS indicator
+      proxy_indicator="${icon}"
     fi
   fi
 
+  # Apply the yellow background and green foreground to the entire indicator
   if [[ -n "$proxy_indicator" ]]; then
-    echo "%{%F{red} %}%}$proxy_indicator" # Using a Font Awesome icon for proxy ( is fa-globe)
+    echo "%{%K{${bg_color}}%F{${fg_color}}${proxy_indicator}%k%f%}"
   fi
 }
 
