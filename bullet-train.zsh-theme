@@ -458,7 +458,7 @@ prompt_custom() {
 function prompt_proxy() {
   local proxy_text_content=""
   local proxy_port=""
-  local icon=$'\uF002' # Cloud icon (Font Awesome fa-cloud)
+  local icon="\u2601 "
 
   # Determine the content of the proxy indicator
   if [[ -n "$http_proxy" ]]; then
@@ -479,8 +479,7 @@ function prompt_proxy() {
 
   # If there's content to display, call prompt_segment directly
   if [[ -n "$proxy_text_content" ]]; then
-    # prompt_segment <BACKGROUND_COLOR> <FOREGROUND_COLOR> <PREFIX_STRING> <CONTENT_STRING>
-    prompt_segment yellow green "" "${proxy_text_content}"
+    prompt_segment white red "${proxy_text_content}"
   fi
 }
 
